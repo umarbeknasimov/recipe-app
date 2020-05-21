@@ -13,7 +13,7 @@ li.hidden, div.hidden, article.hidden, button.hidden, section.hidden {
     display: none;
 }
 
-nav {
+.nav {
     background-color: sandybrown;
     display: flex;
     flex-direction: row;
@@ -21,22 +21,22 @@ nav {
     justify-content: space-between;
 }
 
-nav button {
+.nav button {
     border: none;
     display: flex;
     align-items: center;
     justify-content: center;
 }
 
-nav h1, nav span.material-icons {
+.nav h1, .nav span.material-icons {
     color: white;
 }
 
-nav * {
+.nav * {
     margin: 0 0.2em;
 }
 
-nav .name {
+.nav .name {
     display: flex;
     flex-direction: row;
     align-items: center;
