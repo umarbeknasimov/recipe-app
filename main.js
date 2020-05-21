@@ -1,17 +1,16 @@
-// your javascript code for exercise 4 and exercise 5
 
-
-
-
-let recipesInfo = {};
-const recipesInstructions = {};
-let sortedIds = [];
+//state values
+let recipesInfo = {}; // {recipeid: recipe object, ...}, 
+//initialized to the recipe objects returned from https://spoonacular.com/food-api/docs#Get-Recipe-Information
+const recipesInstructions = {}; //{recipeid: recipe instructions object, ...},
+//initialized to the recipe instruction objects returned from https://spoonacular.com/food-api/docs#Get-Analyzed-Recipe-Instructions
+let sortedIds = []; //sorted recipeids based on what sorting type user chooses
 let sortStyle = null;
-const apiKey = `8a8b1fccd36243c69b171320b12aec27`;
-let fetchedSearchData = {};
-const filter = {"cuisine": [], "diet": []};
-let ingrAdjustRatio = 1;
-let currentRecipeId = null;
+const apiKey = `8a8b1fccd36243c69b171320b12aec27`; //unique to my account, needed for API
+let fetchedSearchData = {}; // initialized to the results object returned from https://spoonacular.com/food-api/docs#Search-Recipes
+const filter = {"cuisine": [], "diet": []}; //used to store what filters user chooses
+let ingrAdjustRatio = 1; //ratio used to adjust ingredients quamtities
+let currentRecipeId = null; //recipeid of recipe user opens
 const numResults = 5; //number of results that will show up on search
 {/* <article class="recipe-result hidden">
     <section class="result-description">
@@ -42,6 +41,11 @@ const numResults = 5; //number of results that will show up on search
     <img src="images/chickenParm.webp" alt="recipe pic">
 </article> */}
 
+/**
+ * Callback function for when user clicks on search
+ * 
+ * Mutates recipesInfo, recipeInstructions by adding all the info for the search results, 
+ */
 async function getInfoForSearchResults() {
   if (fetchedSearchData) {
     for(recipe of fetchedSearchData.results) {
@@ -61,7 +65,9 @@ async function getInfoForSearchResults() {
 }
 
 
-
+/**
+ * Initializes the results page with result elements for all found recipes, in order of sortedIds
+ */
 function updateSearchResults() {
     closeRecipe();
     const results = document.querySelector(`.search-results`);
@@ -78,6 +84,10 @@ function updateSearchResults() {
 
 }
 
+/**
+ * Shows a recipe's details
+ * @param {recipeid} id 
+ */
 function showRecipe(id) {
     currentRecipeId = id;
     console.log(`showing recipe`);
@@ -89,6 +99,9 @@ function showRecipe(id) {
     loadSteps(id);
 }
 
+/**
+ * Closes a recipe's details (opens results page)
+ */
 function closeRecipe() {
     document.querySelector(`.search-container`).classList.remove(`hidden`);
     document.querySelector(`.recipe-container`).classList.add(`hidden`);
@@ -100,6 +113,11 @@ function closeRecipe() {
     currentRecipeId = null;
 }
 
+/**
+ * Helper function used to make result elements
+ * @param {recipeid for recipe} id 
+ * @returns HTMLElement for recipe result
+ */
 function makeSearchResultElement(id) {
     const template = document.querySelector(`.recipe-result.hidden`);
     const resultElem = template.cloneNode(true);
@@ -118,17 +136,25 @@ function makeSearchResultElement(id) {
     resultElem.addEventListener(`click`, () => showRecipe(id));
     return resultElem;
 }
+
+/**
+ * Callback for when user clicks on ingredient
+ * Mutates the ingredient element to be checked or unchecked
+ */
 function handleIngredientClick() {
   console.log(this);
   this.classList.toggle(`checked`);
   this.querySelector(`input`).checked = !this.querySelector(`input`).checked;
 }
 
+/**
+ * Used with handleIngredientClick to prevent event propagation
+ */
 function handleCheckClick() {
   this.checked = !this.checked;
 }
 
-/* <li class="ingredient hidden">
+{/* <li class="ingredient hidden">
     <div>
         <input type="checkbox">
         <p class="type"></p>
@@ -137,7 +163,12 @@ function handleCheckClick() {
         <span class="quantity-num"></span>
         <span class="quantity-unit"></span>
     </div>
-</li> */
+</li> */}
+
+/**
+ * Callback for when user uses the adjust ingredient drop down
+ * Mutates the UI by bolding the refresh element
+ */
 function handleAdjustUnit() {
   console.log(this);
   const chosenIngrElem = Array.from(this.querySelectorAll(`option`)).find(ingr => ingr.selected == true);
@@ -146,6 +177,10 @@ function handleAdjustUnit() {
   document.querySelector(`.apply`).classList.add(`notify`);
 }
 
+/**
+ * Callback for when the user clicks the refresh button
+ * Mutates the UI by adjusting the ingredients quantity as specified by ingrAdjustRatio
+ */
 function handleAdjustRefresh() {
   const chosenAdjustAmount = document.querySelector(`.unit input`).value;
   document.querySelector(`.apply`).classList.remove(`notify`);
@@ -169,6 +204,11 @@ function handleAdjustRefresh() {
     }
   }
 }
+
+/**
+ * Helper function used to load ingredients for specific recipe
+ * @param {recipeid} id 
+ */
 function loadIngredients(id) {
     const ingreList = document.querySelector(`.ingredients-list`);
     ingreList.innerHTML = ``;
@@ -189,6 +229,10 @@ function loadIngredients(id) {
         });
 }
 
+/**
+ * Helper function used to load ingredient adjust bar for specific recipe
+ * @param {recipeid} id 
+ */
 function loadIngrAdjust(id) {
   const adjustSelect = document.querySelector(`select[name=chosen-ingredient]`);
   adjustSelect.innerHTML = "";
@@ -217,9 +261,8 @@ function loadIngrAdjust(id) {
   });
 }
 
-// loadIngredients(ingredientsData[116679]);
 
-/* <div class="description-container">
+{/* <div class="description-container">
 <h1 class="title">Chicken Parm</h1>
 <p class="author">Person</p>
 <section class="stats">
@@ -244,7 +287,12 @@ function loadIngrAdjust(id) {
         </section>
     </div>
 </section>
-</div> */
+</div> */}
+
+/**
+ * Helper function used to load decription for a specific recipe
+ * @param {recipeid} id 
+ */
 function loadDescription(id) {
     const healthScore = recipesInfo[id].healthScore;
     const servings = recipesInfo[id].servings;
@@ -262,7 +310,7 @@ function loadDescription(id) {
 }
 
 
-/* <li class="step-container hidden">
+{/* <li class="step-container hidden">
     <div class="step-num"></div>
     <div>
         <!-- <input type="checkbox"> -->
@@ -270,7 +318,12 @@ function loadDescription(id) {
         <p class="step-description">
         </p>
     </div>
-</li> */
+</li> */}
+
+/**
+ * Helper function used to load steps for specific recipe
+ * @param {recipeid} id 
+ */
 function loadSteps(id) {
     const directionsList = document.querySelector(`.directions-list`);
     console.log(recipesInstructions[id]);
@@ -289,6 +342,9 @@ function loadSteps(id) {
     }
 }
 
+/**
+ * Mutates sortedIds based on what the user selected from sort type dropdown
+ */
 function handleSortSelection() {
   console.log(`handling sort`);
   const selectedSort = Array.from(document.querySelectorAll(`.sort-by select option`)).find(option => option.selected == true);
@@ -313,10 +369,17 @@ function handleSortSelection() {
   console.log(sortedIds);
 }
 
+/**
+ * Callback for when user clicks on reverses order of results
+ */
 function handleSortToggle() {
   sortedIds.reverse();
 }
 
+/**
+ * Toggles between ingredients and directions
+ * @param {HTMLElement label for chosen option} label 
+ */
 function handleViewChange(label) {
   console.log(label);
   if (label.classList.contains(`chosen`)) return
@@ -339,6 +402,11 @@ function handleViewChange(label) {
   }
 }
 
+/**
+ * Callback for when user clicks on search,
+ * 
+ * Mutates fetchedSearchData by populating it with numResults recipe results
+ */
 async function handleSearchInput() {
   const searchInput = document.querySelector(`.search-input input`).value;
   console.log(searchInput);
@@ -353,10 +421,17 @@ function handleFilterInput() {
   console.log(`not implemented`);
 }
 
+/**
+ * Mutates UI by bolding the refresh button
+ */
 function notifyAdjustToUser() {
   document.querySelector(`.apply`).classList.add(`notify`);
 }
 
+/**
+ * Main function used to initialize event listeners for recipe input, sorting style selection, 
+ * back button
+ */
 function main() {
   //getInfoForSearchResults();
   document.querySelector(`.recipe-input`).addEventListener(`click`, async () => {
@@ -385,18 +460,15 @@ function main() {
 
 main();
 
-// loadSteps(recipeData);
 
-/* <section class="description">
+{/* <section class="description">
     <img src="images/chickenParm.webp" alt="picture of recipe">
 </section>
 <div class="description-container">
     <h1 class="title">Chicken Parm</h1> 
     <p class="author">Person</p>
-*/
+*/}
 
-// https://api.spoonacular.com/recipes/{id}/information?includeNutrition=true
-// 8a8b1fccd36243c69b171320b12aec27
 
 
 
