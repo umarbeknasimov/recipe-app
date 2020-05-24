@@ -50,7 +50,7 @@ nav .name {
 	display: flex;
 	align-items: start;
 	justify-content: center;
-	background-color: grey;
+	background-color: lightgrey;
 	border-radius: 2em;
 }
 
