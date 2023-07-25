@@ -1,5 +1,4 @@
-# recipe-app
-A recipe app that uses spoonacular API: [Demo](https://unasimov.github.io/recipe-app)
+# [**Recipe app**](https://unasimov.github.io/recipe-app)
 
 * ## Functionalies
     * Search for recipes
