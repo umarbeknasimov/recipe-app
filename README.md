@@ -1,4 +1,4 @@
-# [**Recipe app**](https://unasimov.github.io/recipe-app)
+# [**Recipe app**](https://umarbeknasimov.github.io/recipe-app)
 
 * ## Functionalies
     * Search for recipes
